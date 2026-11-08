@@ -28,17 +28,18 @@ def _as_numbers(values: list[str]) -> list[float] | None:
 
 
 def summarise_column(name: str, values: list[str]) -> ColumnSummary:
-    numbers = _as_numbers(values)
+    present = [v for v in values if v != ""]
+    numbers = _as_numbers(present)
     if numbers:
         return ColumnSummary(
             name=name,
-            count=len(values),
+            count=len(present),
             kind="number",
             minimum=min(numbers),
             maximum=max(numbers),
             mean=sum(numbers) / len(numbers),
         )
-    return ColumnSummary(name=name, count=len(values), kind="text", distinct=len(set(values)))
+    return ColumnSummary(name=name, count=len(present), kind="text", distinct=len(set(values)))
 
 
 def summarise(rows: list[dict[str, str]], columns: list[str]) -> list[ColumnSummary]:
