@@ -1,0 +1,5 @@
+order_id,city,items,total
+1001,Paris,2,18.50
+1002,Lyon,1,7.25
+1003,Paris,,0
+1004,Nantes,3,31.00
