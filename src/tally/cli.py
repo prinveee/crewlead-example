@@ -56,6 +56,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="tally", description="Summarise the columns of a CSV file.")
     parser.add_argument("path", help="CSV file with a header row")
     parser.add_argument("--version", action="version", version=f"tally {__version__}")
+    parser.add_argument("--json", action="store_true", help="print the summaries as a JSON array")
     args = parser.parse_args(argv)
 
     try:
@@ -67,7 +68,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"tally: {exc.strerror}: {args.path}", file=sys.stderr)
         return 2
 
-    print(render_table(summarise(rows, columns)))
+    summaries = summarise(rows, columns)
+    print(render_json(summaries) if args.json else render_table(summaries))
     return 0
 
 
