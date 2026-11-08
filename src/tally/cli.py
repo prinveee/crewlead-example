@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import sys
 
 from tally import __version__
@@ -31,6 +32,24 @@ def render_table(summaries: list[ColumnSummary]) -> str:
     widths = [max(len(r[i]) for r in [header, *rows]) for i in range(len(header))]
     lines = ["  ".join(cell.ljust(w) for cell, w in zip(r, widths)).rstrip() for r in [header, *rows]]
     return "\n".join(lines)
+
+
+def render_json(summaries: list[ColumnSummary]) -> str:
+    return json.dumps(
+        [
+            {
+                "name": s.name,
+                "kind": s.kind,
+                "count": s.count,
+                "min": s.minimum,
+                "max": s.maximum,
+                "mean": s.mean,
+                "distinct": s.distinct,
+            }
+            for s in summaries
+        ],
+        indent=2,
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
