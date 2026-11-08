@@ -1,0 +1,112 @@
+# crewlead project settings: what machines read (commands, paths, globs).
+# Knowledge for agents lives in .ai/steering/ (product, tech, structure).
+# This file belongs to the project: crewlead creates it once and never
+# overwrites it.
+#
+# Detected by crewlead — kind: python (pyproject.toml).
+# Every value is a first guess: run the project-setup skill to review them with
+# an agent, or check them by hand.
+#
+# Lists use one item per line ("  - value"); the CI guard reads them with a
+# small parser, so keep this flat — no nested lists under these keys.
+# Write regexes in SINGLE quotes: inside them a backslash is literal.
+
+name: crewlead-example
+default_branch: main
+
+# Where issues and change requests live: github (gh, pull requests) or gitlab
+# (glab, merge requests). rules.md §11 gives the commands for it.
+platform: github
+
+# Commands agents run. test_local is the ONLY test command agents may run on a
+# developer machine; CI runs test_full.
+commands:
+  lint: ruff check .
+  typecheck: ""   # none found — fill in, or leave empty
+  test_local: python -m pytest -q -x
+  test_full: python -m pytest -q
+  build: ""   # none found — fill in, or leave empty
+
+# Starts CI on a pushed branch without a PR, for tests that only CI may run
+# (not covered by test_local): the plan's red step pushes the tests alone and
+# runs this. Empty: the implementor opens the draft PR early instead.
+ci_run: ""   # none found — fill in, or leave empty
+
+# Git pathspecs of test files ("*" also matches "/"). The guard counts test
+# cases in these and rejects new skip/only markers in them.
+test_globs:
+  - '*test_*.py'
+  - '*_test.py'
+
+# Regex (POSIX ERE) of one test case line, used to count cases.
+test_case_regex: '^[[:space:]]*(async[[:space:]]+)?def test_'
+
+# Regexes (POSIX ERE) of repo paths whose committed files may only be ADDED,
+# never edited, renamed or deleted.
+immutable_paths:
+  []   # none found
+
+# Regexes of paths where a wrong change costs the most. Touching one caps
+# autonomy at A2 and labels the PR needs-lead-review.
+# The first group protects the rules agents follow, for every tool: loosening a
+# rule is a change a lead must see, in its own PR.
+protected_paths:
+  - '^\.ai/'
+  - '(^|/)AGENTS\.md$'
+  - '(^|/)CLAUDE\.md$'
+  - '^\.(agents|claude|cursor|codex)/'
+  - '^\.github/'
+  - '^pyproject\.toml$'
+
+# Where screens come from (rules.md §5 Designs). none: agents design UI
+# themselves, following the existing UI. figma (or another tool, with its link):
+# the design is the contract. project-setup asks.
+design: none
+design_link: ""
+
+# Which agent plays each role, by Herdr's agent names (claude, codex, cursor,
+# gemini, …). One agent may play them all, each in its own session; the
+# reviewer always starts from a fresh context.
+agents:
+  planner: claude
+  implementor: codex
+  reviewer: claude
+
+# How agents pass the turn to each other (rules.md §2 Handoffs): auto (Herdr
+# when it is running, otherwise the person pastes a short message), herdr, or
+# manual.
+handoff: manual
+
+# Language of text written for people on issues and PRs: issue bodies, plans,
+# stop reports, reviews, PR descriptions (en, th, …). Code, commits, files and
+# machine markers stay in English. project-setup asks.
+language: en
+
+# Usernames (GitHub or GitLab) who may approve work on a protected path (a /go comment on the
+# issue, and the PR review before merge). Never the developer driving the work
+# or the issue's author: keep at least two people here. A team of one sets
+# solo: true and lists only themselves (see rules.md §4 Approvals).
+solo: true
+approvers:
+  - prinveee
+
+# The full business rules, each with an ID (BR-<AREA>-<nn>). Intake, planner
+# and reviewer read it; a PR that changes a rule updates it.
+business_rules: .ai/business-rules.md
+
+# Label names for the flow's states. Rename one to use a label your board
+# already has (e.g. in_review: Currently reviewing); the installer creates only
+# the labels still named as below, and never changes a board's own label.
+labels:
+  queued: ai
+  awaiting_approval: ai:awaiting-approval
+  implementing: ai:implementing
+  in_review: ai:in-review
+  ready: ai:ready
+  blocked: ai:blocked
+  lead_review: needs-lead-review
+
+# Large-work specs (rules.md §3): none yet. Uncomment one when you have them.
+# specs:
+#   docs: docs/specs                  # plain spec documents
+#   bmad_stories: bmad-output/stories # or BMAD story files
