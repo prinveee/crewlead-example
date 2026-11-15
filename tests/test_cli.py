@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from tally.cli import main
 
 
@@ -14,3 +16,10 @@ def test_prints_a_table(tmp_path, capsys):
 def test_missing_file_exits_2(tmp_path, capsys):
     assert main([str(tmp_path / "nope.csv")]) == 2
     assert "nope.csv" in capsys.readouterr().err
+
+
+def test_example_orders_items_is_a_number_column(capsys):
+    path = Path(__file__).resolve().parent.parent / "examples" / "orders.csv"
+    assert main([str(path)]) == 0
+    line = next(line for line in capsys.readouterr().out.splitlines() if line.split()[0] == "items")
+    assert line.split() == ["items", "number", "3", "1", "3", "2"]
