@@ -88,7 +88,7 @@ language: en
 # solo: true and lists only themselves (see rules.md §4 Approvals).
 solo: true
 approvers:
-  - prinveee
+  - unjito
 
 # The full business rules, each with an ID (BR-<AREA>-<nn>). Intake, planner
 # and reviewer read it; a PR that changes a rule updates it.
