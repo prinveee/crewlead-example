@@ -17,7 +17,7 @@ ruff check . && pytest -q
 
 ## About this repository
 
-This is an **example project for [crewlead](https://github.com/prinveee/crewlead)**.
+This is an **example project for [crewlead](https://github.com/unjito/crewlead)**.
 Its issues, plan comments, draft pull requests and reviews were written by AI
 agents running the crewlead flow for real (intake → planner → `/go` →
 implementor → reviewer → a person merges). Browse the closed and open issues
